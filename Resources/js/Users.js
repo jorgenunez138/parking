@@ -45,6 +45,7 @@ class Users
 
     userData(URLactual)
     {
+        alert(URLactual);
         if(PATHNAME == URLactual){
             localStorage.removeItem("user");
             $("#menuNavBar1").css('display','none');
