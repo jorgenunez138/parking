@@ -1,18 +1,43 @@
 <?php
 
-require_once("connection.php");
+require "config.php";
 
-$connection = new connection();
-$conn = $connection->connection();
+$url = isset($_GET['url']) ? $_GET['url']: 'Index/index';
+$url = explode("/", $url);
 
-$sql = "SELECT * FROM data";
-$result = $conn->query($sql);
+$controller = "";
+$method = "";
 
-if ($result->num_rows > 0) {
-  // output data of each row
-  while($row = $result->fetch_assoc()) {
-    echo "id: " . $row["id"]. " - Name: " . $row["name"]. " - Address: " . $row["address"]. " - Phone: " . $row["phone"]. "<br>";
+if(isset($url[0])){
+  $controller = $url[0];
+}
+
+if(isset($url[1])){
+  if($url[1] != ''){
+    $method = $url[1];
   }
-} else {
-  echo "0 results";
+}
+
+spl_autoload_register(function($class){
+  if(file_exists(LBS.$class.".php")){
+    require LBS.$class.".php";
+  }
+});
+
+require 'Controllers/Errors.php';
+$error = new Errors;
+
+$controllersPath = "Controllers/".$controller.".php";
+if(file_exists($controllersPath)){
+  require $controllersPath;
+  $controller = new $controller();
+  if(isset($method)){
+    if(method_exists($controller,$method)){
+        $controller->{$method}();
+    }else{
+      $error->error();
+    }
+  }
+}else{
+  $error->error();
 }
