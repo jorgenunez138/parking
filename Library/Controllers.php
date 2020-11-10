@@ -1,6 +1,6 @@
 <?php
 
-class Controllers
+class Controllers extends Anonymous
 {
     public function __construct() {
         Session::start();

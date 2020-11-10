@@ -5,7 +5,6 @@ class Users extends Controllers
     function __construct()
     {
         parent::__construct();
-        $this->getRoles();
     }
 
     public function destroySession()
@@ -27,9 +26,29 @@ class Users extends Controllers
     {
         $data = $this->model->getRoles();
         if(is_array($data)){
-            return json_encode($data);
+            echo json_encode($data);
         }else{
             return $data;
+        }
+    }
+
+    public function registerUser(){
+        $array = array(
+            $_POST['name'],
+            $_POST['lastname'],
+            $_POST['nid'],
+            $_POST['phone'],
+            $_POST['email'],
+            $_POST['password'],
+            $_POST['rol'],
+            "imagen"
+        );
+        $data = $this->model->registerUser($this->userClass($array));
+        if($data == 1){
+            echo "El email ya esta registrado!";
+        }else{
+            $this->model->sendEmail($_POST['email']);
+            echo $data;
         }
     }
 }
